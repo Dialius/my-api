@@ -39,11 +39,10 @@ class ProductController extends Controller
 
         $products = $query->latest()->paginate(10);
         
-        return response()->json([
+        return \App\Http\Resources\ProductResource::collection($products)->additional([
             'success' => true,
-            'message' => 'List of products',
-            'data' => $products
-        ], 200);
+            'message' => 'List of products'
+        ]);
     }
 
     /**
@@ -85,11 +84,10 @@ class ProductController extends Controller
 
         $product = Product::create($data);
 
-        return response()->json([
+        return (new \App\Http\Resources\ProductResource($product->load(['category', 'seller'])))->additional([
             'success' => true,
-            'message' => 'Product created successfully',
-            'data' => $product->load(['category', 'seller'])
-        ], 201);
+            'message' => 'Product created successfully'
+        ]);
     }
 
     /**
@@ -106,11 +104,10 @@ class ProductController extends Controller
             ], 404);
         }
 
-        return response()->json([
+        return (new \App\Http\Resources\ProductResource($product))->additional([
             'success' => true,
-            'message' => 'Product detail',
-            'data' => $product
-        ], 200);
+            'message' => 'Product detail'
+        ]);
     }
 
     /**
@@ -166,11 +163,10 @@ class ProductController extends Controller
 
         $product->update($data);
 
-        return response()->json([
+        return (new \App\Http\Resources\ProductResource($product->load(['category', 'seller'])))->additional([
             'success' => true,
-            'message' => 'Product updated successfully',
-            'data' => $product->load(['category', 'seller'])
-        ], 200);
+            'message' => 'Product updated successfully'
+        ]);
     }
 
     /**

@@ -16,11 +16,10 @@ class CustomerController extends Controller
     {
         $customers = Customer::latest()->paginate(10);
         
-        return response()->json([
+        return \App\Http\Resources\CustomerResource::collection($customers)->additional([
             'success' => true,
-            'message' => 'List of customers',
-            'data' => $customers
-        ], 200);
+            'message' => 'List of customers'
+        ]);
     }
 
     /**
@@ -48,11 +47,10 @@ class CustomerController extends Controller
 
         $customer = Customer::create($request->all());
 
-        return response()->json([
+        return (new \App\Http\Resources\CustomerResource($customer))->additional([
             'success' => true,
-            'message' => 'Customer created successfully',
-            'data' => $customer
-        ], 201);
+            'message' => 'Customer created successfully'
+        ]);
     }
 
     /**
@@ -69,11 +67,10 @@ class CustomerController extends Controller
             ], 404);
         }
 
-        return response()->json([
+        return (new \App\Http\Resources\CustomerResource($customer))->additional([
             'success' => true,
-            'message' => 'Customer detail',
-            'data' => $customer
-        ], 200);
+            'message' => 'Customer detail'
+        ]);
     }
 
     /**
@@ -110,11 +107,10 @@ class CustomerController extends Controller
 
         $customer->update($request->all());
 
-        return response()->json([
+        return (new \App\Http\Resources\CustomerResource($customer))->additional([
             'success' => true,
-            'message' => 'Customer updated successfully',
-            'data' => $customer
-        ], 200);
+            'message' => 'Customer updated successfully'
+        ]);
     }
 
     /**

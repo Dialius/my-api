@@ -12,7 +12,10 @@ class SellerController extends Controller
 {
     public function index()
     {
-        return response()->json(['data' => Seller::all()]);
+        return \App\Http\Resources\SellerResource::collection(Seller::all())->additional([
+            'success' => true,
+            'message' => 'List of sellers'
+        ]);
     }
 
     public function store(Request $request)
@@ -36,14 +39,20 @@ class SellerController extends Controller
             'store' => $request->store,
         ]);
 
-        return response()->json(['message' => 'Seller created', 'data' => $seller], 201);
+        return (new \App\Http\Resources\SellerResource($seller))->additional([
+            'success' => true,
+            'message' => 'Seller created'
+        ]);
     }
 
     public function show($id)
     {
         $seller = Seller::find($id);
         if (!$seller) return response()->json(['message' => 'Seller not found'], 404);
-        return response()->json(['data' => $seller]);
+        return (new \App\Http\Resources\SellerResource($seller))->additional([
+            'success' => true,
+            'message' => 'Seller detail'
+        ]);
     }
 
     public function update(Request $request, $id)
@@ -61,7 +70,10 @@ class SellerController extends Controller
 
         $seller->update($request->all());
 
-        return response()->json(['message' => 'Seller updated', 'data' => $seller]);
+        return (new \App\Http\Resources\SellerResource($seller))->additional([
+            'success' => true,
+            'message' => 'Seller updated'
+        ]);
     }
 
     public function destroy($id)
@@ -73,3 +85,4 @@ class SellerController extends Controller
         return response()->json(['message' => 'Seller deleted']);
     }
 }
+

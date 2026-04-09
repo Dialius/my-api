@@ -1,14 +1,36 @@
 # 📚 API DOCUMENTATION - MY API PROJECT
 
+## 🔐 AUTHENTICATION
+
+API ini menggunakan **Laravel Sanctum** untuk authentication dengan Bearer Token.
+
+### Public Endpoints (Tidak perlu token):
+- `POST /api/register` - Daftar user baru
+- `POST /api/login` - Login user
+
+### Protected Endpoints (Perlu token):
+- `POST /api/logout` - Logout user
+- `GET /api/me` - Get user profile
+- Semua endpoint CRUD (categories, sellers, customers, products)
+
+**Cara menggunakan token:**
+```
+Authorization: Bearer YOUR_ACCESS_TOKEN
+```
+
+📖 **Lihat panduan lengkap:** [AUTH_GUIDE.md](AUTH_GUIDE.md)
+
+---
+
 ## 🗂️ Daftar Tabel yang Sudah Dibuat
 
 ### ✅ Tabel yang Sudah Ada:
 
-1. **sellers** - Data penjual/toko
-2. **customers** - Data pelanggan
-3. **categories** - Kategori produk
-4. **products** - Data produk (dengan relasi ke categories dan sellers)
-5. **users** - User authentication (default Laravel)
+1. **users** - User authentication (dengan Sanctum tokens)
+2. **sellers** - Data penjual/toko
+3. **customers** - Data pelanggan
+4. **categories** - Kategori produk
+5. **products** - Data produk (dengan relasi ke categories dan sellers)
 
 ---
 

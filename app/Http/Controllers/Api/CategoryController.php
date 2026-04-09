@@ -16,11 +16,10 @@ class CategoryController extends Controller
     {
         $categories = Category::withCount('products')->latest()->paginate(10);
         
-        return response()->json([
+        return \App\Http\Resources\CategoryResource::collection($categories)->additional([
             'success' => true,
-            'message' => 'List of categories',
-            'data' => $categories
-        ], 200);
+            'message' => 'List of categories'
+        ]);
     }
 
     /**
@@ -45,11 +44,10 @@ class CategoryController extends Controller
 
         $category = Category::create($request->all());
 
-        return response()->json([
+        return (new \App\Http\Resources\CategoryResource($category))->additional([
             'success' => true,
-            'message' => 'Category created successfully',
-            'data' => $category
-        ], 201);
+            'message' => 'Category created successfully'
+        ]);
     }
 
     /**
@@ -66,11 +64,10 @@ class CategoryController extends Controller
             ], 404);
         }
 
-        return response()->json([
+        return (new \App\Http\Resources\CategoryResource($category))->additional([
             'success' => true,
-            'message' => 'Category detail',
-            'data' => $category
-        ], 200);
+            'message' => 'Category detail'
+        ]);
     }
 
     /**
@@ -104,11 +101,10 @@ class CategoryController extends Controller
 
         $category->update($request->all());
 
-        return response()->json([
+        return (new \App\Http\Resources\CategoryResource($category))->additional([
             'success' => true,
-            'message' => 'Category updated successfully',
-            'data' => $category
-        ], 200);
+            'message' => 'Category updated successfully'
+        ]);
     }
 
     /**

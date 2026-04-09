@@ -17,11 +17,39 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
+        $exceptions->render(function (\Illuminate\Database\Eloquent\ModelNotFoundException $e, Request $request) {
             if ($request->is('api/*')) {
                 return response()->json([
-                    'message' => 'Record not found.'
+                    'success' => false,
+                    'message' => 'Data tidak ditemukan.'
                 ], 404);
+            }
+        });
+
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Endpoint tidak ditemukan.'
+                ], 404);
+            }
+        });
+
+        $exceptions->render(function (\Illuminate\Auth\AuthenticationException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthenticated atau Token tidak valid.'
+                ], 401);
+            }
+        });
+
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Method HTTP tidak diizinkan untuk endpoint ini.'
+                ], 405);
             }
         });
     })->create();
