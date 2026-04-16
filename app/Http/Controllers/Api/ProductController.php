@@ -15,34 +15,18 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Product::with(['category', 'seller']);
+        // Mulai query
+        $query = Product::with('category');
 
-        // Filter by category
-        if ($request->has('category_id')) {
-            $query->where('category_id', $request->category_id);
+        // Jika ada pencarian nama (?name=sepatu)
+        if ($request->has('name')) {
+            $query->where('name', 'like', '%' . $request->name . '%');
         }
 
-        // Filter by seller
-        if ($request->has('seller_id')) {
-            $query->where('seller_id', $request->seller_id);
-        }
+        // Pagination (5 data per halaman)
+        $products = $query->latest()->paginate(5);
 
-        // Filter by active status
-        if ($request->has('is_active')) {
-            $query->where('is_active', $request->is_active);
-        }
-
-        // Search by name
-        if ($request->has('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
-        }
-
-        $products = $query->latest()->paginate(10);
-        
-        return \App\Http\Resources\ProductResource::collection($products)->additional([
-            'success' => true,
-            'message' => 'List of products'
-        ]);
+        return response()->json($products, 200);
     }
 
     /**

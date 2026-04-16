@@ -10,9 +10,23 @@ use Illuminate\Support\Str;
 
 class SellerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return \App\Http\Resources\SellerResource::collection(Seller::all())->additional([
+        $query = Seller::query();
+
+        // Search by name, email, or store
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('store', 'like', "%{$search}%");
+            });
+        }
+
+        $sellers = $query->latest()->paginate(10);
+
+        return \App\Http\Resources\SellerResource::collection($sellers)->additional([
             'success' => true,
             'message' => 'List of sellers'
         ]);

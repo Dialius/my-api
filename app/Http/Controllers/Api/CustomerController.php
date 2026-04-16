@@ -12,10 +12,22 @@ class CustomerController extends Controller
     /**
      * Display a listing of customers.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $customers = Customer::latest()->paginate(10);
-        
+        $query = Customer::query();
+
+        // Search by name, email, or phone
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        $customers = $query->latest()->paginate(10);
+
         return \App\Http\Resources\CustomerResource::collection($customers)->additional([
             'success' => true,
             'message' => 'List of customers'

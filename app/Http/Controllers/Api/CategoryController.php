@@ -12,10 +12,17 @@ class CategoryController extends Controller
     /**
      * Display a listing of categories.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categories = Category::withCount('products')->latest()->paginate(10);
-        
+        $query = Category::withCount('products');
+
+        // Search by name
+        if ($request->has('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        $categories = $query->latest()->paginate(10);
+
         return \App\Http\Resources\CategoryResource::collection($categories)->additional([
             'success' => true,
             'message' => 'List of categories'
